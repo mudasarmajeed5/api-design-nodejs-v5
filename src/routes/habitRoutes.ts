@@ -1,3 +1,6 @@
+
+// Never add a middleware (next) function inside a route handler.
+
 import { Router } from 'express'
 import { validateBody, validateParams } from '../middleware/validation.ts'
 import z from 'zod'
