@@ -105,11 +105,26 @@ export const habitTagsRelations = relations(habitTags, ({ one }) => ({
   }),
 }))
 
-export type User = typeof users.$inferSelect;
-export type Habit = typeof habits.$inferSelect;
-export type Entries = typeof entries.$inferSelect;
-export type Tags = typeof tags.$inferSelect;
-export type HabitTags = typeof habitTags.$inferSelect;
+export type User = typeof users.$inferSelect
+export type Habit = typeof habits.$inferSelect
+export type Entries = typeof entries.$inferSelect
+export type Tags = typeof tags.$inferSelect
+export type HabitTags = typeof habitTags.$inferSelect
 
-export const insertUserSchema = createInsertSchema(users);
-export const selectUserSchema = createSelectSchema(users);
+// these validations will run at run-time with the help of zod and provide meaningful errors. 
+
+export const insertUserSchema = createInsertSchema(users)
+export const selectUserSchema = createSelectSchema(users)
+
+export const insertHabitSchema = createInsertSchema(habits)
+export const selectHabitSchema = createSelectSchema(habits)
+
+export const insertEntriesSchema = createInsertSchema(entries)
+export const selectEntriesSchema = createSelectSchema(entries)
+
+export const insertTagSchema = createInsertSchema(tags)
+export const selectTagSchema = createSelectSchema(tags)
+
+export const insertHabitTagsSchema = createInsertSchema(habitTags)
+export const selectHabitTagsSchema = createSelectSchema(habitTags)
+
