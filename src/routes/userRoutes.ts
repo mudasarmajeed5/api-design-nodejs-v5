@@ -1,7 +1,10 @@
 import { Router } from 'express'
-const router = Router()
+import { authenticatedToken } from '../middleware/auth.ts'
 
-router.get('/', (req, res) => {
+
+const router = Router()
+router.use(authenticatedToken)
+router.get('/', (req, res) =>  {
   res.json({ message: 'Users' })
 })
 
