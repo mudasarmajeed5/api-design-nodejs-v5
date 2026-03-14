@@ -19,7 +19,7 @@ export const createHabit = async (req: AuthenticatedRequest, res: Response) => {
         })
         .returning()
       if (tagIds && tagIds.length > 0) {
-        const [habitTagValues] = tagIds.map((tagId) => ({
+        const habitTagValues = tagIds.map((tagId) => ({
           habitId: newHabit.id,
           tagId,
         }))
@@ -28,12 +28,10 @@ export const createHabit = async (req: AuthenticatedRequest, res: Response) => {
       // whatever we return here will go to result, at line 10.
       return newHabit
     })
-    return res
-      .json({
-        message: 'Habit Created',
-        habit: result,
-      })
-      .status(201)
+    return res.status(201).json({
+      message: 'Habit Created',
+      habit: result,
+    })
   } catch (error) {
     console.error('Create habit error', error)
     res.status(500).json({ error: 'Failed to create Habit' })
@@ -83,12 +81,12 @@ export const updateHabit = async (req: AuthenticatedRequest, res: Response) => {
           ...updates,
           updatedAt: new Date(),
         })
-        .where(and(eq(habitTags.id, id), eq(habits.userId, id)))
+        .where(and(eq(habits.id, id), eq(habits.userId, req.user.id)))
         .returning()
       if (!updatedHabit) {
-        // if anything doesn't matches in where clause drizzle returns undefined.
-        return res.status(401).end()
+        return null
       }
+
       if (tagIds !== undefined) {
         await tx.delete(habitTags).where(eq(habitTags.habitId, id))
         if (tagIds.length > 0) {
@@ -99,15 +97,20 @@ export const updateHabit = async (req: AuthenticatedRequest, res: Response) => {
           await tx.insert(habitTags).values(habitTagValues)
         }
       }
-      return updateHabit
+      return updatedHabit
     })
+    if (!result) {
+      return res.status(404).json({
+        error: 'Habit not found',
+      })
+    }
 
-    res.json({
+    return res.json({
       message: 'Habit was updated',
       habit: result,
     })
   } catch (error) {
     console.error('Update habit error', error)
-    res.status(500).json({ error: 'Failed to update Habit' })
+    return res.status(500).json({ error: 'Failed to update Habit' })
   }
 }

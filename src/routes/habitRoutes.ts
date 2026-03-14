@@ -19,7 +19,7 @@ const createHabitSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   frequency: z.string(),
-  targetCount: z.string().optional(),
+  targetCount: z.number(),
   tagIds: z.array(z.string()).optional(),
 })
 const createParamsSchema = z.object({
