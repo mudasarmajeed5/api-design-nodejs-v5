@@ -4,7 +4,11 @@ import { Router } from 'express'
 import { validateBody, validateParams } from '../middleware/validation.ts'
 import z from 'zod'
 import { authenticatedToken } from '../middleware/auth.ts'
-import { createHabit } from '../controllers/habitController.ts'
+import {
+  createHabit,
+  getUserHabits,
+  updateHabit,
+} from '../controllers/habitController.ts'
 
 const router = Router()
 
@@ -22,15 +26,13 @@ const createParamsSchema = z.object({
   id: z.string().max(3),
 })
 
-router.get('/', (req, res) => {
-  res.json({ message: 'Habits' })
-})
+router.get('/', getUserHabits)
 router.get('/:id', (req, res) => {
   res.json({ message: 'Got one habit' })
 })
 // 201 means your POST request was good
 router.post('/', validateBody(createHabitSchema), createHabit)
-
+router.patch('/:id', updateHabit)
 router.delete('/:id', (req, res) => {
   res.status(201).json({ message: 'Deleted habit' })
 })
